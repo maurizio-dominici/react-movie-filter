@@ -21,6 +21,9 @@ export default function Main() {
   // Stato per il filtro selezionato (genere)
   const [selectedGenre, setSelectedGenre] = useState("");
 
+  // Stato per il termine di ricerca (titolo del film)
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Stati per la gestione del form di aggiunta (titolo e genere del nuovo film)
   const [newTitle, setNewTitle] = useState("");
   const [newGenre, setNewGenre] = useState("");
@@ -34,8 +37,25 @@ export default function Main() {
       result = result.filter((movie) => movie.genre === selectedGenre);
     }
 
+    // Filtra per termine di ricerca nel titolo
+    if (searchTerm) {
+      result = result.filter((movie) =>
+        movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setFilteredMovies(result);
-  }, [selectedGenre, movies]);
+  }, [selectedGenre, searchTerm, movies]);
+
+  // Controllo sull'aggiunta di un titolo e genere (necessari entrambi)
+  const handleAddMovie = (e) => {
+    e.preventDefault();
+    if (!newTitle || !newGenre) return;
+    const newMovie = { title: newTitle, genre: newGenre };
+    setMovies((prev) => [...prev, newMovie]);
+    setNewTitle("");
+    setNewGenre("");
+  };
 
   // Deep copy dell'array principale
   const uniqueGenres = [];
@@ -71,6 +91,15 @@ export default function Main() {
               </option>
             ))}
           </select>
+
+          {/* Input per cercare il titolo del film utilizzando (e.target.value) */}
+          <input
+            type="text"
+            placeholder="Cerca per titolo"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control"
+          />
         </div>
 
         {/* Lista di tutti i titoli presenti */}
@@ -81,6 +110,36 @@ export default function Main() {
             </li>
           ))}
         </ul>
+
+        {/* Form per aggiungere un nuovo film con i controlli (handleAddMovie) */}
+        <h2>Aggiungi un nuovo film</h2>
+        <form onSubmit={handleAddMovie} className="row g-2">
+          <div className="col-md-6">
+            <input
+              type="text"
+              placeholder="Titolo"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="col-md-6">
+            <input
+              type="text"
+              placeholder="Genere"
+              value={newGenre}
+              onChange={(e) => setNewGenre(e.target.value)}
+              className="form-control"
+            />
+          </div>
+
+          {/* Bottone per l'invio del form */}
+          <div className="col-12">
+            <button className="btn btn-primary mt-2" type="submit">
+              Aggiungi
+            </button>
+          </div>
+        </form>
       </div>
     </main>
   );
