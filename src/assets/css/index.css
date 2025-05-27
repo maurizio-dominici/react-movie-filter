@@ -35,3 +35,9 @@
 .col-1-2 {
   width: calc(100% / 2);
 }
+
+/* ^ MAIN  */
+
+main {
+  background-color: #b0f3ad;
+}
